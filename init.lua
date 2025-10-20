@@ -11,9 +11,6 @@ vim.opt.relativenumber = true
 
 vim.cmd("syntax enable")
 
-vim.cmd("colorscheme desert")
-
-
 
 -- init.lua
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -23,25 +20,21 @@ if not vim.loop.fs_stat(lazypath) then
     "clone",
     "--filter=blob:none",
     "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
+    "--branch=stable",
     lazypath,
   })
 end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-  -- Your plugins will go here
-  
-  -- init.lua (inside lazy.setup)
+--nvim tree
 {
   "nvim-tree/nvim-tree.lua",
   dependencies = {
-    "nvim-tree/nvim-web-devicons", -- optional, for file icons
+    "nvim-tree/nvim-web-devicons", 
   },
   config = function()
     require("nvim-tree").setup({
-      -- Your nvim-tree configuration options here
-      -- Example:
       sort = {
         sorter = "case_sensitive",
       },
@@ -54,12 +47,65 @@ require("lazy").setup({
       filters = {
         dotfiles = true,
       },
+        
+      actions = {
+        open_file = {
+            quit_on_open = true,
+        }
+      }
     })
   end,
 },
+--colorscheme
+{
+      'sainnhe/sonokai',
+      lazy = false,
+      priority = 1000,
+      config = function()
+        -- Optionally configure and load the colorscheme
+        -- directly inside the plugin declaration.
+        vim.g.sonokai_enable_italic = true
+        vim.g.sonokai_style = "maia"
+        vim.g.sonokai_italic_comments = true   -- use italics on comments
+        vim.g.sonokai_better_performance = true
+        vim.cmd.colorscheme('sonokai')
+	end,
+},
+
+--treesitter
+{
+  "nvim-treesitter/nvim-treesitter",
+  build = ":TSUpdate",
+  config = function()
+    require("nvim-treesitter.configs").setup({
+      ensure_installed = { "lua", "python", "javascript", "html", "css", "c" },
+      highlight = { enable = true },
+      indent = { enable = true },
+    })
+  end,
+},
+--status line
+{
+  "nvim-lualine/lualine.nvim",
+  dependencies = { "nvim-tree/nvim-web-devicons" },
+  config = function()
+    require("lualine").setup({
+      options = {
+        theme = "sonokai",
+      }
+    })
+  end,
+},
+
 })
 
--- shortcut commands 
 
--- init.lua (after lazy.setup)
-vim.keymap.set('n', '<leader>e', '<Cmd>NvimTreeToggle<CR>', { desc = 'Toggle NvimTree' })
+vim.keymap.set('n', '<leader>e', function()
+  require("nvim-tree.api").tree.toggle({ focus = true })
+end, { desc = "Toggle and focus NvimTree" })
+
+-- Focus NvimTree if open
+vim.keymap.set('n', '<leader>tt', function()
+  require("nvim-tree.api").tree.focus()
+end, { desc = "Focus NvimTree" })
+
