@@ -16,5 +16,5 @@ vim.g.loaded_netrwPlugin = 1
 -- Load plugins
 require("plugins")
 require("keymaps")
--- Keybindings
 
+-- Keybindings
