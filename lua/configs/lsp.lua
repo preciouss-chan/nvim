@@ -29,6 +29,17 @@ local on_attach = function(_, bufnr)
 	vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, opts)
 end
 
+-- lua/configs/lsp.lua
+local on_attach = function(_, bufnr)
+  local opts = { buffer = bufnr, silent = true }
+
+  -- ... (your other maps like gd, K, <leader>rr) ...
+
+  -- ADD THIS:
+  -- Show diagnostic error/warning in a float window
+  vim.keymap.set('n', '<leader>n', vim.diagnostic.open_float, opts)
+end
+
 -- Get capabilities for nvim-cmp
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
